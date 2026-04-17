@@ -1,0 +1,194 @@
+{
+  "main": {
+    "id": "ae91faa69705de5a",
+    "type": "split",
+    "children": [
+      {
+        "id": "23913e92de821375",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2ffb9473c98729be",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "specs/001-sowhat-news-mvp/spec.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "spec"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "02a14cfe0b5fca1a",
+    "type": "split",
+    "children": [
+      {
+        "id": "f2934fa72873b436",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "be548d55181fe971",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "df8a06f130ccb383",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "a297e279b376c756",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "2e9174e1e59feeb2",
+    "type": "split",
+    "children": [
+      {
+        "id": "e212e9879d6392e6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e8c3aba9cb5fbb8c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "specs/001-sowhat-news-mvp/spec.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for spec"
+            }
+          },
+          {
+            "id": "3ec558f0c7cd83bf",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "specs/001-sowhat-news-mvp/spec.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from spec"
+            }
+          },
+          {
+            "id": "ebc0cd679635092a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "7e5bc32a44b1e2ae",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "f0d397bb234c908f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "specs/001-sowhat-news-mvp/spec.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of spec"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "2ffb9473c98729be",
+  "lastOpenFiles": [
+    "assets/Gemini_Generated_Image_vlqh22vlqh22vlqh.png",
+    "assets/Gemini_Generated_Image_owp1alowp1alowp1.png",
+    "assets/Gemini_Generated_Image_vc0uw5vc0uw5vc0u.png",
+    "assets",
+    "untitled folder"
+  ]
+}

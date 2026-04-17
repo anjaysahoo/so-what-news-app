@@ -1,110 +1,111 @@
 
-# Product Requirements Document (PRD): Impact News MVP
 
-## 1. Executive Summary
+**Product Requirements Document (PRD)**
+
+**SoWhat?** (Tagline: The news. But for you.)
+
+## **1\. Executive Summary**
+
 **Product Name:** SoWhat News App
+
 **Objective:** Build a "Contextual Utility News Engine" that translates generic news events into personalized, action-oriented impact summaries. It shifts the focus from "what happened" to "how this affects you."
+
 **Platform:** Responsive Web Application (Mobile-first, desktop-scalable).
-**Privacy Model:** Zero-PII (Personally Identifiable Information). Uses an "Anonymous Persona" model based on life anchors.
 
-## 2. Technical Stack
-* **Framework:** Next.js (React for the frontend, API Routes for the backend).
-* **Styling:** Tailwind CSS (for rapid, responsive mobile-first UI).
-* **State Management:** React Hooks + Browser Local Storage (to persist user settings).
-* **Rate Limiting / Caching:** Redis (Upstash recommended, utilizing their REST API for Edge compatibility).
-* **Deployment:** Cloudflare Pages (using `@cloudflare/next-on-pages`).
-* **Runtime Constraints:** API routes must utilize the Edge Runtime (V8 isolates) since Cloudflare Pages relies on Cloudflare Workers, meaning standard Node.js native modules cannot be used.
-* **External APIs:**
-    * **News Ingestion:** Free tier News API (e.g., NewsAPI.org, GNews, or similar) to fetch top 5 daily headlines.
-    * **LLM Provider:** Fast, low-cost model (e.g., Google Gemini 1.5 Flash, OpenAI GPT-4o-mini, or Anthropic Claude 3 Haiku).
+**Privacy Model:** Zero-PII. Uses an "Anonymous Persona" model based on life anchors.
 
----
+## **2\. Technical Stack**
 
-## 3. User Flow & UI Specifications
+### **Frontend (Deployed via Cloudflare Pages)**
 
-### 3.1. Onboarding & Persona Creation
-* **Layout:** Clean, single-page interface. No account creation, login, or email capture.
-* **Inputs:** Three simple dropdown menus to define the "Life Anchors":
-    1.  **Career/Industry:** (e.g., Tech/Software, Healthcare, Retail/Service, Student, Retired)
-    2.  **Financial Profile:** (e.g., Salaried, Freelancer/Gig, Active Investor, Debt Payoff)
-    3.  **Housing/Life Stage:** (e.g., Renter, Homeowner, Parent, Single)
-* **Action:** A prominent "Generate My Daily Impact" CTA button.
+* **Framework:** React (Next.js App Router or Vite).
+* **UI Components:** **ShadCN UI** \+ Tailwind CSS (using standard components like Cards, Select dropdowns, Buttons, and Skeleton loaders).
+* **State Management:** **Zustand** (specifically utilizing the persist middleware to save persona data seamlessly to browser localStorage).
+* **Data Fetching:** **TanStack Query** (React Query) to handle fetching, caching, loading states, and error handling from the backend API.
+* **Form Validation:** **Zod** (to validate user inputs before hitting the backend).
 
-### 3.2. State Persistence
-* Once a user selects their dropdowns and generates news, the 3 "Life Anchors" must be saved to the browser's `localStorage`.
-* On return visits, the dropdowns should auto-populate with the saved anchors.
+### **Backend (Deployed via Cloudflare Workers / Edge Runtime)**
 
-### 3.3. The News Feed (Main View)
-* **Loading State:** A skeleton loader or spinner while the LLM processes the news.
-* **UI Component:** A vertical scroll of "Impact Cards".
+* **API Framework:** **Hono.js** (Lightweight, natively optimized for Cloudflare Edge).
+* **API Specification:** **OpenAPI 3.0** (Auto-generated using @hono/zod-openapi to maintain strict synchronization between the backend logic and API documentation).
+* **AI Orchestration:** **Vercel AI SDK** (Specifically the generateObject function, which guarantees structured JSON outputs from the LLM).
+* **Data Validation:** **Zod** (Shared schemas to validate incoming API requests and define the exact structure of the LLM output).
+* **Rate Limiting:** Upstash Redis (REST API compatible with Cloudflare Edge).
+* **LLM Provider:** Fast, low-cost model (e.g., Google Gemini 1.5 Flash, OpenAI GPT-4o-mini).
+
+## **3\. User Flow & UI Specifications**
+
+### **3.1. Onboarding & Persona Creation**
+
+* **Layout:** Clean, single-page interface using ShadCN layout components. No account creation.
+* **Inputs:** Three ShadCN \<Select\> components to define the "Life Anchors":
+    1. **Career/Industry:** (e.g., Tech/Software, Healthcare, Retail, Student, Retired)
+    2. **Financial Profile:** (e.g., Salaried, Freelancer, Active Investor, Debt Payoff)
+    3. **Housing/Life Stage:** (e.g., Renter, Homeowner, Parent, Single)
+* **Action:** A ShadCN \<Button\> for "Generate My Daily Impact."
+
+### **3.2. State Persistence (Zustand)**
+
+* The 3 "Life Anchors" state will be managed by a Zustand store.
+* Using Zustand's persist middleware, this state is automatically synchronized with localStorage. On return visits, the Zustand store initializes from localStorage, instantly populating the ShadCN Select components.
+
+### **3.3. The News Feed (Main View)**
+
+* **Loading State:** TanStack Query handles the isLoading state, rendering ShadCN \<Skeleton\> cards while the LLM processes.
+* **UI Component:** A vertical stack of ShadCN \<Card\> components.
 * **Card Structure:**
-    * **Label:** "Why this matters to you"
-    * **Impact Headline:** Bold, 10-15 words. Focuses on utility/action.
-    * **Context:** 2-sentence summary explaining the connection between the raw news and the user's life.
-    * **Source:** The original generic headline + a link to the raw article (for credibility).
+    * **Header:** "Why this matters to you" badge.
+    * **Impact Headline:** Bold, 10-15 words focusing on utility.
+    * **Content:** 2-sentence summary explaining the impact.
+    * **Footer:** Original headline \+ source link.
 
----
+## **4\. Backend Logic & Data Pipeline**
 
-## 4. Backend Logic & Data Pipeline
+### **4.1. The API Route Structure (Hono \+ OpenAPI)**
 
-### 4.1. The API Route (`/api/generate-impact`)
-The Next.js backend will expose a single POST endpoint running on the **Edge Runtime**. It must execute the following sequence:
+The backend will use @hono/zod-openapi to expose a type-safe POST endpoint (e.g., /api/generate-impact).
 
-1.  **IP Extraction & Rate Limiting:**
-    * Extract the incoming request's IP address from Cloudflare's headers (e.g., `cf-connecting-ip`).
-    * Check the IP against the Upstash Redis database via HTTP/REST.
-    * **Constraint:** Maximum of **3 requests per IP per rolling 24-hour window**.
-    * If exceeded, return `HTTP 429 Too Many Requests` with a user-friendly error message.
-2.  **News Fetching:**
-    * Ping the News API using the standard native `fetch` API to grab the top 5 current national/global headlines and their brief descriptions.
-3.  **LLM Transformation:**
-    * Construct a system prompt combining the user's payload (the 3 Life Anchors) and the 5 raw news items.
-    * Send the prompt to the LLM provider using Edge-compatible fetch requests.
-4.  **Response Delivery:**
-    * Return a structured JSON array to the frontend.
+1. **Request Validation (Zod):**
+    * The endpoint requires a Zod schema ensuring the payload contains the 3 string fields (Industry, Financials, Life Stage). If invalid, Hono automatically returns a 400 Bad Request.
+2. **IP Extraction & Rate Limiting:**
+    * Extract cf-connecting-ip from Cloudflare headers.
+    * Check the IP against Upstash Redis. (Max 3 requests per 24 hours). Return 429 Too Many Requests if exceeded.
+3. **News Fetching:**
+    * Fetch the top 5 daily headlines from a standard News API using Edge-compatible fetch.
 
-### 4.2. Prompt Engineering Specification
-The backend must strictly instruct the LLM to return JSON. Use the following prompt structure as the baseline:
+### **4.2. AI Transformation (Vercel AI SDK \+ Zod)**
 
-```text
-You are a Contextual News Translator. 
-User Persona: Industry: [Field 1], Financials: [Field 2], Life Stage: [Field 3].
+Instead of relying on prompt engineering alone to get valid JSON, the backend will use the Vercel AI SDK's generateObject method.
 
-Below are 5 current news stories. For each story, explain the direct, practical impact on this specific user persona. Use the second person ("You"). 
+* **The Zod Output Schema:**  
+  ```js
+        const impactSchema = z.object({  
+              newsItems: z.array(z.object({  
+              originalHeadline: z.string(),  
+              originalUrl: z.string().url(),  
+              impactHeadline: z.string().describe("A 10-15 word personalized headline"),  
+              impactSummary: z.string().describe("A 2-sentence explanation of the impact")  
+          }))  
+          });
+    ```
+  
 
-Return ONLY a JSON array of objects with the following keys:
-- originalHeadline: The raw news headline.
-- originalUrl: The link to the story.
-- impactHeadline: A 10-15 word personalized headline focusing on utility.
-- impactSummary: A 2-sentence explanation of how this affects the user's wallet, job, or lifestyle.
-```
+* **Execution:** The Vercel AI SDK passes the raw news, the user persona, and the impactSchema to the LLM. The SDK forces the LLM to return data that perfectly matches the Zod schema, entirely eliminating JSON parsing errors.
 
-### 4.3. Expected JSON Payload (Output to Frontend)
-```json
-[
-  {
-    "originalHeadline": "Central Bank raises interest rates by 0.5%",
-    "originalUrl": "https://example.com/news/123",
-    "impactHeadline": "Your rent renewal might be more expensive next month.",
-    "impactSummary": "The rate hike increases borrowing costs for landlords. Since you are a renter, expect your landlord to pass these costs onto you during your next lease renewal."
-  }
-]
-```
+### **4.3. Delivery to TanStack Query**
 
----
+* The Hono API returns the validated JSON object to the frontend.
+* TanStack Query receives the data, caches it for the session, and triggers the UI to swap the ShadCN Skeletons for the populated Impact Cards.
 
-## 5. Security & Constraints
+## **5\. Security & Constraints**
 
-* **API Key Protection:** All API keys (News API, LLM API, Redis URI) must be stored as Cloudflare Environment Variables and strictly accessed server-side via the Edge API routes. They must *never* be exposed to the client (do not use `NEXT_PUBLIC_` prefixes for these keys).
-* **Error Handling:** The frontend must gracefully handle `429` (Rate Limit), `500` (Server/LLM fail), and timeout errors with clear, polite UI messages.
-* **Payload Validation:** The API route must validate the incoming POST request to ensure the 3 persona fields exist and are strings before hitting the LLM to prevent prompt injection or empty generations.
+* **API Key Protection:** All keys (News API, LLM API, Upstash Redis) must be stored securely as Cloudflare Environment Variables and accessed only within the Hono backend.
+* **Type Safety:** The OpenAPI specification generated by Hono can be used to generate strict TypeScript types for TanStack Query on the frontend, ensuring end-to-end type safety.
+* **Graceful Degradation:** If the LLM times out or the rate limit is hit, TanStack Query will catch the error, and the UI will display a ShadCN \<Alert\> component with a user-friendly message.
 
----
+## **6\. Out of Scope for MVP**
 
-## 6. Out of Scope for MVP
-To maintain a lean launch, the following are strictly excluded:
 * User Authentication (OAuth, Passwords).
-* Database storage of generated news or user profiles (using Local Storage only).
-* Push notifications, email digests, or native mobile app wrappers.
-* "Bring Your Own Key" (BYOK) functionality.
-* Pagination or historical news archives.
+* Database storage of generated news or user profiles (using Zustand/Local Storage only).
+* Push notifications or email digests.
+* BYOK (Bring Your Own Key) functionality.
