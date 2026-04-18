@@ -16,6 +16,8 @@ import {
   CAREER_OPTIONS,
   FINANCIAL_OPTIONS,
   LIFE_STAGE_OPTIONS,
+  PERSONA_PRESETS,
+  type PersonaPreset,
 } from "@/constants/persona-options";
 import type { GenerateResponse, ImpactCard } from "@/lib/schema";
 
@@ -26,6 +28,14 @@ export default function Home() {
   const [results, setResults] = useState<ImpactCard[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [tookMs, setTookMs] = useState<number | null>(null);
+  const [activePreset, setActivePreset] = useState<string | null>(null);
+
+  function applyPreset(preset: PersonaPreset) {
+    setCareer(preset.career);
+    setFinancialProfile(preset.financialProfile);
+    setLifeStage(preset.lifeStage);
+    setActivePreset(preset.label);
+  }
 
   async function handleGenerate() {
     setLoading(true);
@@ -60,12 +70,44 @@ export default function Home() {
         </p>
       </header>
 
+      <div className="mb-5">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-neutral-500">
+          Try a preset persona
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {PERSONA_PRESETS.map((p) => {
+            const active = activePreset === p.label;
+            return (
+              <button
+                key={p.label}
+                type="button"
+                onClick={() => applyPreset(p)}
+                className={
+                  "rounded-full border px-3 py-1.5 text-sm transition " +
+                  (active
+                    ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
+                    : "border-neutral-300 bg-white text-neutral-700 hover:border-indigo-400 hover:text-indigo-700")
+                }
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
           <label className="mb-1.5 block text-sm font-medium text-neutral-700">
             Career
           </label>
-          <Select value={career} onValueChange={setCareer}>
+          <Select
+            value={career}
+            onValueChange={(v) => {
+              setCareer(v);
+              setActivePreset(null);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -83,7 +125,13 @@ export default function Home() {
           <label className="mb-1.5 block text-sm font-medium text-neutral-700">
             Financial Profile
           </label>
-          <Select value={financialProfile} onValueChange={setFinancialProfile}>
+          <Select
+            value={financialProfile}
+            onValueChange={(v) => {
+              setFinancialProfile(v);
+              setActivePreset(null);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -101,7 +149,13 @@ export default function Home() {
           <label className="mb-1.5 block text-sm font-medium text-neutral-700">
             Life Stage
           </label>
-          <Select value={lifeStage} onValueChange={setLifeStage}>
+          <Select
+            value={lifeStage}
+            onValueChange={(v) => {
+              setLifeStage(v);
+              setActivePreset(null);
+            }}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

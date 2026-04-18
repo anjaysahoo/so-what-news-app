@@ -185,6 +185,7 @@
   },
   "active": "2ffb9473c98729be",
   "lastOpenFiles": [
+    "tsconfig.tsbuildinfo",
     "components/ui/badge.tsx",
     "components/ui/skeleton.tsx",
     "next-env.d.ts",
@@ -195,7 +196,6 @@
     "components/ui/select.tsx",
     "components/ui/card.tsx",
     "components/ui/button.tsx",
-    "components/ui",
     "node_modules/@floating-ui/react-dom/README.md",
     "node_modules/@floating-ui/dom/README.md",
     "node_modules/@floating-ui/utils/README.md",
