@@ -185,6 +185,8 @@
   },
   "active": "2ffb9473c98729be",
   "lastOpenFiles": [
+    "components/ui/badge.tsx",
+    "components/ui/skeleton.tsx",
     "next-env.d.ts",
     "app/page.tsx",
     "app/api/generate-impact/route.ts",
@@ -194,8 +196,6 @@
     "components/ui/card.tsx",
     "components/ui/button.tsx",
     "components/ui",
-    "components",
-    "constants/persona-options.ts",
     "node_modules/@floating-ui/react-dom/README.md",
     "node_modules/@floating-ui/dom/README.md",
     "node_modules/@floating-ui/utils/README.md",
