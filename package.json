@@ -1,0 +1,14 @@
+{
+  "name": "sowhat-news",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "core": "node --env-file=.env core.js"
+  },
+  "dependencies": {
+    "ai": "latest",
+    "@ai-sdk/openai": "latest",
+    "zod": "latest"
+  }
+}
