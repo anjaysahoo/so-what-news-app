@@ -211,7 +211,8 @@ export default function Home() {
           {results.map((r, i) => (
             <div
               key={i}
-              className="grid grid-cols-1 gap-4 md:grid-cols-2"
+              className="impact-reveal grid grid-cols-1 gap-4 md:grid-cols-2"
+              style={{ animationDelay: `${i * 180}ms` }}
             >
               <Card className="bg-neutral-50/50">
                 <CardHeader>
