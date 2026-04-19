@@ -1,55 +1,42 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Persona, PersonalizeResponse } from "@/lib/schema";
+import type { PersonalizeResponse } from "@/lib/schema";
 
-type Personalized = Pick<
+export type Personalized = Pick<
   PersonalizeResponse,
   "impactHeadline" | "whyItMatters" | "relevanceScore"
 >;
 
 type Props = {
   headline: string;
-  persona: Persona;
+  loading: boolean;
+  result: Personalized | null;
+  error: string | null;
+  onSoWhat: () => void;
 };
 
-export function NewsCard({ headline, persona }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<Personalized | null>(null);
-  const [error, setError] = useState<string | null>(null);
+// green 8-10, amber 5-7, red 1-4
+function badgeClasses(score: number) {
+  if (score >= 8) return "bg-emerald-100 text-emerald-800 border-emerald-300";
+  if (score >= 5) return "bg-amber-100 text-amber-800 border-amber-300";
+  return "bg-red-100 text-red-800 border-red-300";
+}
 
-  async function handleSoWhat() {
-    if (loading || result) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/personalize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ headline, persona }),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data: PersonalizeResponse = await res.json();
-      setResult({
-        impactHeadline: data.impactHeadline,
-        whyItMatters: data.whyItMatters,
-        relevanceScore: data.relevanceScore,
-      });
-    } catch (err) {
-      console.log("personalize error", err);
-      setError("Failed to personalize. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export function NewsCard({ headline, loading, result, error, onSoWhat }: Props) {
   const showExpanded = loading || !!result;
+  // low-relevance dim: score <= 3
+  const dim = result && result.relevanceScore <= 3;
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card
+      className={
+        "transition-all duration-300 ease-out hover:shadow-md " +
+        (dim ? "scale-[0.98] opacity-50" : "opacity-100")
+      }
+    >
       <CardHeader>
         <div className="text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
           Headline
@@ -61,14 +48,14 @@ export function NewsCard({ headline, persona }: Props) {
 
       <CardContent className="space-y-3">
         {!result && !loading && (
-          <Button onClick={handleSoWhat} disabled={loading} variant="default">
+          <Button onClick={onSoWhat} disabled={loading} variant="default">
             So What?
           </Button>
         )}
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* grid-rows 0fr -> 1fr trick to animate height without a lib */}
+        {/* grid-rows 0fr -> 1fr trick animates height without a lib */}
         <div
           className="grid transition-[grid-template-rows] duration-300 ease-out"
           style={{ gridTemplateRows: showExpanded ? "1fr" : "0fr" }}
@@ -84,12 +71,17 @@ export function NewsCard({ headline, persona }: Props) {
             )}
 
             {result && !loading && (
-              <div className="rounded-lg border border-indigo-200 bg-indigo-50/40 p-4">
-                <div className="mb-2 flex items-center gap-2">
+              <div className="impact-reveal rounded-lg border border-indigo-200 bg-indigo-50/40 p-4">
+                <div className="mb-2 flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-0.5 text-xs font-semibold text-white">
                     Why this matters to you
                   </span>
-                  <span className="inline-flex items-center rounded-full border border-neutral-300 bg-white px-2.5 py-0.5 text-xs font-semibold text-neutral-700">
+                  <span
+                    className={
+                      "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold " +
+                      badgeClasses(result.relevanceScore)
+                    }
+                  >
                     Relevance: {result.relevanceScore}/10
                   </span>
                 </div>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -16,24 +15,49 @@ import {
   type PersonaPreset,
 } from "@/constants/persona-options";
 import { NewsFeed } from "@/components/NewsFeed";
+import { useLocalStorage } from "@/lib/useLocalStorage";
+
+type StoredPersona = {
+  career: string;
+  financialProfile: string;
+  lifeStage: string;
+};
+
+const DEFAULT_PERSONA: StoredPersona = {
+  career: CAREER_OPTIONS[0],
+  financialProfile: FINANCIAL_OPTIONS[0],
+  lifeStage: LIFE_STAGE_OPTIONS[0],
+};
 
 export default function Home() {
-  const [career, setCareer] = useState<string>(CAREER_OPTIONS[0]);
-  const [financialProfile, setFinancialProfile] = useState<string>(FINANCIAL_OPTIONS[0]);
-  const [lifeStage, setLifeStage] = useState<string>(LIFE_STAGE_OPTIONS[0]);
-  const [activePreset, setActivePreset] = useState<string | null>(null);
+  const [persona, setPersona] = useLocalStorage<StoredPersona>(
+    "sowhat:persona",
+    DEFAULT_PERSONA
+  );
+  const [activePreset, setActivePreset] = useLocalStorage<string | null>(
+    "sowhat:activePreset",
+    null
+  );
 
   function applyPreset(preset: PersonaPreset) {
-    setCareer(preset.career);
-    setFinancialProfile(preset.financialProfile);
-    setLifeStage(preset.lifeStage);
+    setPersona({
+      career: preset.career,
+      financialProfile: preset.financialProfile,
+      lifeStage: preset.lifeStage,
+    });
     setActivePreset(preset.label);
   }
 
-  const persona = { career, financialProfile, lifeStage };
+  function updateField(field: keyof StoredPersona, value: string) {
+    setPersona({ ...persona, [field]: value });
+    setActivePreset(null);
+  }
+
+  // Remount the feed when persona changes — drops all personalized card state.
+  const personaKey = `${persona.career}|${persona.financialProfile}|${persona.lifeStage}`;
 
   return (
-    <main className="mx-auto max-w-3xl p-8">
+    <main className="mx-auto max-w-3xl p-6 md:p-8">
       <header className="mb-8">
         <h1 className="text-4xl font-bold tracking-tight text-neutral-900">
           SoWhat News
@@ -77,11 +101,8 @@ export default function Home() {
             Career
           </label>
           <Select
-            value={career}
-            onValueChange={(v) => {
-              setCareer(v);
-              setActivePreset(null);
-            }}
+            value={persona.career}
+            onValueChange={(v) => updateField("career", v)}
           >
             <SelectTrigger>
               <SelectValue />
@@ -101,11 +122,8 @@ export default function Home() {
             Financial Profile
           </label>
           <Select
-            value={financialProfile}
-            onValueChange={(v) => {
-              setFinancialProfile(v);
-              setActivePreset(null);
-            }}
+            value={persona.financialProfile}
+            onValueChange={(v) => updateField("financialProfile", v)}
           >
             <SelectTrigger>
               <SelectValue />
@@ -125,11 +143,8 @@ export default function Home() {
             Life Stage
           </label>
           <Select
-            value={lifeStage}
-            onValueChange={(v) => {
-              setLifeStage(v);
-              setActivePreset(null);
-            }}
+            value={persona.lifeStage}
+            onValueChange={(v) => updateField("lifeStage", v)}
           >
             <SelectTrigger>
               <SelectValue />
@@ -145,7 +160,7 @@ export default function Home() {
         </div>
       </section>
 
-      <NewsFeed persona={persona} />
+      <NewsFeed key={personaKey} persona={persona} />
     </main>
   );
 }
