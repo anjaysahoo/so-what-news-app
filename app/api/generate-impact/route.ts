@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
   const { persona } = parsed.data;
   const t0 = Date.now();
-  const results = await Promise.all(HEADLINES.map((h) => rewrite(h, persona)));
+  const results = await Promise.all(HEADLINES.map((h) => rewrite(h.headline, persona)));
   const tookMs = Date.now() - t0;
 
   const payload: GenerateResponse = { results, tookMs };

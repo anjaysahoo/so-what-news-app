@@ -1,14 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-yellow: #f5d547;
+  --brand-yellow-dark: #e6c63a;
+  --brand-black: #111111;
+  --page-bg: #faf7f0;
+  --card-bg: #ffffff;
+  --card-back-bg: #111111;
+  --text-primary: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --text-on-dark: #faf7f0;
+}
+
+@theme inline {
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-black: var(--brand-black);
+  --color-page-bg: var(--page-bg);
+  --color-card-bg: var(--card-bg);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
 }
 
 @keyframes impactReveal {
@@ -25,4 +45,76 @@ body {
 .impact-reveal {
   opacity: 0;
   animation: impactReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* --- 3D flip card --- */
+/* Parent owns perspective. Never put transforms on ancestors of .flipper */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flip-card.is-flipped .flipper {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.face-back {
+  transform: rotateY(180deg) translateZ(0);
+}
+
+/* Button pulse when ready but not yet flipped */
+@keyframes readyPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 213, 71, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(245, 213, 71, 0);
+  }
+}
+
+.btn-ready {
+  animation: readyPulse 1.6s ease-in-out infinite;
+}
+
+/* Low-relevance signal: desaturate + dim the front face of cards scoring ≤ 3 */
+.face-front.is-dimmed {
+  filter: grayscale(0.85) brightness(0.92);
+  opacity: 0.62;
+  transition: filter 400ms ease-out, opacity 400ms ease-out;
+}
+.face-front.is-dimmed:hover {
+  filter: grayscale(0.3) brightness(1);
+  opacity: 0.92;
+}
+
+/* Tiny spinner */
+@keyframes spinnerRot {
+  to { transform: rotate(360deg); }
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(17, 17, 17, 0.25);
+  border-top-color: var(--brand-black);
+  animation: spinnerRot 0.7s linear infinite;
 }

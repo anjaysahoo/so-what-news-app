@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Flip Test — SoWhat News</title>
+<style>
+  :root {
+    --brand-yellow: #F5D547;
+    --brand-black: #111111;
+    --page-bg: #FAF7F0;
+    --card-bg: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-muted: #6B6B6B;
+    --text-on-dark: #FAF7F0;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--page-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  .wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 20px 80px;
+  }
+
+  h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 800;
+    margin: 0 0 4px;
+    font-size: 28px;
+  }
+
+  .hint { color: var(--text-muted); font-size: 14px; margin: 0 0 16px; }
+
+  /* PARENT owns perspective. Do NOT put transforms on anything outside the flipper. */
+  .card {
+    width: min(400px, 92vw);
+    aspect-ratio: 3 / 4;
+    max-height: 75vh;
+    perspective: 1000px;
+  }
+
+  /* Flipper: the only transformed element. preserve-3d is critical. */
+  .flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-style: preserve-3d;
+    will-change: transform;
+    cursor: pointer;
+  }
+
+  .card.is-flipped .flipper { transform: rotateY(180deg); }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    /* Hide the back of each face so they don't show through during rotation */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+    /* Nudge each face forward/back a hair to avoid z-fighting on some GPUs */
+    transform: translateZ(0);
+  }
+
+  .front {
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .front .image {
+    flex: 0 0 60%;
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 50%, #475569 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+  }
+
+  .front .body {
+    flex: 1;
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .headline {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .sowhat {
+    align-self: flex-start;
+    background: var(--brand-yellow);
+    color: var(--brand-black);
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .back {
+    background: var(--brand-black);
+    color: var(--text-on-dark);
+    transform: rotateY(180deg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .score {
+    align-self: flex-end;
+    color: var(--brand-yellow);
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  .impact {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 22px;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .why {
+    font-size: 15px;
+    line-height: 1.5;
+    color: rgba(250, 247, 240, 0.82);
+    margin: 0;
+    overflow-y: auto;
+  }
+
+  .back-hint {
+    margin-top: auto;
+    font-size: 12px;
+    color: rgba(250, 247, 240, 0.55);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .counter {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Flip Test</h1>
+    <p class="hint">Tap the card (or the yellow button) to flip. Back also taps to return.</p>
+
+    <div class="card" id="card">
+      <div class="flipper" id="flipper">
+        <div class="face front">
+          <div class="image">portrait image slot (3:4)</div>
+          <div class="body">
+            <h2 class="headline">Semiconductor tariffs rattle supply chain across Asia</h2>
+            <button class="sowhat" id="sowhat" type="button">So What?</button>
+          </div>
+        </div>
+        <div class="face back">
+          <div class="score">9/10</div>
+          <p class="impact">Your chip holdings are directly exposed.</p>
+          <p class="why">Expect volatility this week as TSMC, Samsung, and their downstream partners reprice supplier contracts. If you hold NVDA, AMD, or semi ETFs, watch for margin commentary in the next earnings cycle — the pass-through math is ugly.</p>
+          <div class="back-hint">← tap to flip back</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="counter" id="counter">flips: 0</div>
+  </div>
+
+<script>
+  const card = document.getElementById('card');
+  const btn = document.getElementById('sowhat');
+  const counter = document.getElementById('counter');
+  let n = 0;
+
+  const toggle = (e) => {
+    if (e) e.stopPropagation();
+    card.classList.toggle('is-flipped');
+    counter.textContent = `flips: ${++n}`;
+  };
+
+  btn.addEventListener('click', toggle);
+  card.addEventListener('click', toggle);
+</script>
+</body>
+</html>
