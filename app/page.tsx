@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ export default function Home() {
     "sowhat:activePreset",
     null
   );
+  const [filterOpen, setFilterOpen] = useState(false);
 
   function applyPreset(preset: PersonaPreset) {
     setPersona({
@@ -48,6 +50,9 @@ export default function Home() {
     });
     setActivePreset(preset.label);
   }
+
+  const personaSummary =
+    activePreset ?? `${persona.career} · ${persona.financialProfile} · ${persona.lifeStage}`;
 
   function updateField(field: keyof StoredPersona, value: string) {
     setPersona({ ...persona, [field]: value });
@@ -74,12 +79,44 @@ export default function Home() {
       </header>
 
       <main className="mx-auto max-w-3xl px-6 pb-16 pt-6">
-        {/* Persona controls — compact */}
-        <section className="rounded-2xl border border-black/5 bg-white/70 p-4 shadow-sm">
-          <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
-            Your lens
-          </div>
+        {/* Persona controls — collapsible */}
+        <section className="rounded-2xl border border-black/5 bg-white/70 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setFilterOpen((o) => !o)}
+            aria-expanded={filterOpen}
+            aria-controls="persona-filter-panel"
+            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+          >
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                Your lens
+              </div>
+              <div className="mt-0.5 truncate text-sm font-medium text-neutral-800">
+                {personaSummary}
+              </div>
+            </div>
+            <span className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3 py-1 text-xs font-medium text-neutral-700">
+              {filterOpen ? "Close" : "Change"}
+              <svg
+                className={
+                  "h-3.5 w-3.5 transition-transform " + (filterOpen ? "rotate-180" : "")
+                }
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+          </button>
 
+          {filterOpen && (
+          <div id="persona-filter-panel" className="border-t border-black/5 p-4">
           <div className="mb-4 flex flex-wrap gap-2">
             {PERSONA_PRESETS.map((p) => {
               const active = activePreset === p.label;
@@ -162,6 +199,8 @@ export default function Home() {
               </Select>
             </div>
           </div>
+          </div>
+          )}
         </section>
 
         <NewsFeed persona={persona} />

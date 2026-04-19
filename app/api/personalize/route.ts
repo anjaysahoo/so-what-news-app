@@ -32,11 +32,18 @@ Persona:
 
 Generic headline: "${headline}"
 
-Rules:
+Rules for impactHeadline:
 - Focus on CONSEQUENCE, not the event.
 - Use second-person ("Your", "You") where natural.
 - Be concrete and specific — money amounts, timelines, career moves.
-- 15 words or less for the headline.
+- 15 words or less.
+
+Rules for whyItMatters:
+- 2–3 sentences, ~45–70 words. Not one sentence. Not a paragraph.
+- Sentence 1: name the exact mechanism (which asset, tax, expense, or career path gets hit, and by how much).
+- Sentence 2: give a timeline or a concrete action window (this month / next quarter / when they renew / when they file).
+- Sentence 3 (optional): a second-order effect or a specific thing they should watch/do next.
+- No generic "this could affect you" filler. No restating the headline. No hedging.
 
 Rate relevance 1–10. BE BRUTAL. Default to LOW scores. Most news is noise for most people.
 

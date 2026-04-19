@@ -15,7 +15,9 @@ export const ImpactSchema = z.object({
     ),
   whyItMatters: z
     .string()
-    .describe("One concise sentence explaining why this matters to the persona specifically."),
+    .describe(
+      "2–3 sentences (roughly 45–70 words) explaining why this matters to this persona specifically. Cite concrete numbers, timelines, or the exact asset/expense/career move affected. No filler, no generic platitudes."
+    ),
 });
 export type Impact = z.infer<typeof ImpactSchema>;
 

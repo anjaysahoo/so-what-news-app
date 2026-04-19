@@ -127,6 +127,7 @@ export function NewsFeed({ persona }: { persona: Persona }) {
           <NewsCard
             key={item.id}
             headline={item.headline}
+            summary={item.summary}
             image={item.image}
             imageIndex={i}
             status={s.status}

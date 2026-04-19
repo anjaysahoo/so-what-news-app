@@ -14,6 +14,7 @@ export type CardStatus = "idle" | "loading" | "ready" | "error";
 
 type Props = {
   headline: string;
+  summary: string;
   image: string;
   imageIndex: number;
   status: CardStatus;
@@ -24,6 +25,7 @@ type Props = {
 
 export function NewsCard({
   headline,
+  summary,
   image,
   imageIndex,
   status,
@@ -70,10 +72,15 @@ export function NewsCard({
             />
           </div>
 
-          <div className="flex h-[55%] flex-col justify-between p-5">
-            <h2 className="font-display text-[22px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
-              {headline}
-            </h2>
+          <div className="flex h-[55%] flex-col justify-between gap-3 p-5">
+            <div className="flex flex-col gap-2 overflow-hidden">
+              <h2 className="font-display text-[22px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
+                {headline}
+              </h2>
+              <p className="text-[13px] leading-[1.5] text-[var(--text-muted)]">
+                {summary}
+              </p>
+            </div>
 
             <SoWhatButton
               status={status}
