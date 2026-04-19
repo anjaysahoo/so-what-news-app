@@ -105,6 +105,70 @@ body {
   opacity: 0.92;
 }
 
+/* --- Hero card mock (landing page tease) --- */
+@keyframes heroTilt {
+  0%, 70%, 100% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  80% {
+    transform: rotateY(15deg) rotateX(-2deg);
+  }
+  90% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+}
+
+.hero-card-tilt {
+  animation: heroTilt 12s ease-in-out infinite;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+@keyframes heroButtonPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 213, 71, 0.55);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(245, 213, 71, 0);
+    transform: scale(1.03);
+  }
+}
+
+.hero-btn-pulse {
+  animation: heroButtonPulse 4s ease-in-out infinite;
+}
+
+/* --- Scroll fade-up (IntersectionObserver) --- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.fade-up.is-visible {
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .fade-up.is-visible {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}
+
 /* Tiny spinner */
 @keyframes spinnerRot {
   to { transform: rotate(360deg); }

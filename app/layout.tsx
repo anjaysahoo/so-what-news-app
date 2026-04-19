@@ -17,8 +17,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "SoWhat News",
-  description: "Contextual Utility News Engine",
+  title: "SoWhat News — News that knows who you are.",
+  description:
+    "Pick who you are. Tap any headline. Get a personal take and a relevance score from 1–10.",
+  openGraph: {
+    title: "SoWhat News — News that knows who you are.",
+    description:
+      "Pick who you are. Tap any headline. Get a personal take and a relevance score from 1–10.",
+    images: ["/og.png"],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
