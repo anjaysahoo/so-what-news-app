@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -58,11 +59,14 @@ export default function Home() {
       {/* Brand header */}
       <header className="sticky top-0 z-10 border-b border-black/5 bg-[var(--page-bg)]/85 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <div className="font-display text-3xl font-black leading-none tracking-tight text-[var(--brand-black)]">
-            <span>So</span>
-            <span className="text-[var(--brand-yellow)]">What</span>
-            <span>?</span>
-          </div>
+          <Image
+            src="/brand.png"
+            alt="SoWhat? — The news. But for you."
+            width={1024}
+            height={555}
+            priority
+            className="h-10 w-auto md:h-12"
+          />
           <div className="hidden text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] sm:block">
             news that hits you
           </div>

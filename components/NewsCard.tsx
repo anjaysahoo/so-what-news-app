@@ -59,18 +59,18 @@ export function NewsCard({
             (isLowRelevance ? " is-dimmed" : "")
           }
         >
-          <div className="relative h-[55%] w-full overflow-hidden">
+          <div className="relative h-[45%] w-full overflow-hidden bg-[var(--card-bg)]">
             <Image
               src={image}
               alt=""
               fill
               sizes="(max-width: 640px) 100vw, 400px"
-              className="object-cover"
+              className="object-contain"
               priority={imageIndex < 2}
             />
           </div>
 
-          <div className="flex h-[45%] flex-col justify-between p-5">
+          <div className="flex h-[55%] flex-col justify-between p-5">
             <h2 className="font-display text-[22px] font-bold leading-tight tracking-tight text-[var(--text-primary)]">
               {headline}
             </h2>
