@@ -53,114 +53,118 @@ export default function Home() {
     setActivePreset(null);
   }
 
-  // Remount the feed when persona changes — drops all personalized card state.
+  // persona change remounts feed → drops stale personalized state
   const personaKey = `${persona.career}|${persona.financialProfile}|${persona.lifeStage}`;
 
   return (
-    <main className="mx-auto max-w-3xl p-6 md:p-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-neutral-900">
-          SoWhat News
-        </h1>
-        <p className="mt-2 text-lg text-neutral-600">
-          Tap <span className="font-semibold">So What?</span> on any headline —
-          see how it hits{" "}
-          <span className="italic font-medium text-neutral-900">you</span>.
-        </p>
+    <div className="min-h-screen bg-[var(--page-bg)]">
+      {/* Brand header */}
+      <header className="sticky top-0 z-10 border-b border-black/5 bg-[var(--page-bg)]/85 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+          <div className="font-display text-3xl font-black leading-none tracking-tight text-[var(--brand-black)]">
+            <span>So</span>
+            <span className="text-[var(--brand-yellow)]">What</span>
+            <span>?</span>
+          </div>
+          <div className="hidden text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] sm:block">
+            news that hits you
+          </div>
+        </div>
       </header>
 
-      <div className="mb-5">
-        <div className="mb-2 text-xs font-semibold uppercase tracking-widest text-neutral-500">
-          Try a preset persona
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {PERSONA_PRESETS.map((p) => {
-            const active = activePreset === p.label;
-            return (
-              <button
-                key={p.label}
-                type="button"
-                onClick={() => applyPreset(p)}
-                className={
-                  "rounded-full border px-3 py-1.5 text-sm transition " +
-                  (active
-                    ? "border-indigo-500 bg-indigo-600 text-white shadow-sm"
-                    : "border-neutral-300 bg-white text-neutral-700 hover:border-indigo-400 hover:text-indigo-700")
-                }
+      <main className="mx-auto max-w-3xl px-6 pb-16 pt-6">
+        {/* Persona controls — compact */}
+        <section className="rounded-2xl border border-black/5 bg-white/70 p-4 shadow-sm">
+          <div className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+            Your lens
+          </div>
+
+          <div className="mb-4 flex flex-wrap gap-2">
+            {PERSONA_PRESETS.map((p) => {
+              const active = activePreset === p.label;
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  onClick={() => applyPreset(p)}
+                  className={
+                    "rounded-full border px-3 py-1.5 text-xs font-medium transition " +
+                    (active
+                      ? "border-[var(--brand-black)] bg-[var(--brand-black)] text-white"
+                      : "border-neutral-300 bg-white text-neutral-700 hover:border-[var(--brand-black)]")
+                  }
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Career
+              </label>
+              <Select value={persona.career} onValueChange={(v) => updateField("career", v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CAREER_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Financial
+              </label>
+              <Select
+                value={persona.financialProfile}
+                onValueChange={(v) => updateField("financialProfile", v)}
               >
-                {p.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FINANCIAL_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-            Career
-          </label>
-          <Select
-            value={persona.career}
-            onValueChange={(v) => updateField("career", v)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {CAREER_OPTIONS.map((o) => (
-                <SelectItem key={o} value={o}>
-                  {o}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Life stage
+              </label>
+              <Select
+                value={persona.lifeStage}
+                onValueChange={(v) => updateField("lifeStage", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LIFE_STAGE_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </section>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-            Financial Profile
-          </label>
-          <Select
-            value={persona.financialProfile}
-            onValueChange={(v) => updateField("financialProfile", v)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {FINANCIAL_OPTIONS.map((o) => (
-                <SelectItem key={o} value={o}>
-                  {o}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-neutral-700">
-            Life Stage
-          </label>
-          <Select
-            value={persona.lifeStage}
-            onValueChange={(v) => updateField("lifeStage", v)}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {LIFE_STAGE_OPTIONS.map((o) => (
-                <SelectItem key={o} value={o}>
-                  {o}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </section>
-
-      <NewsFeed key={personaKey} persona={persona} />
-    </main>
+        <NewsFeed key={personaKey} persona={persona} />
+      </main>
+    </div>
   );
 }

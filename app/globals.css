@@ -1,14 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-yellow: #f5d547;
+  --brand-yellow-dark: #e6c63a;
+  --brand-black: #111111;
+  --page-bg: #faf7f0;
+  --card-bg: #ffffff;
+  --card-back-bg: #111111;
+  --text-primary: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --text-on-dark: #faf7f0;
+}
+
+@theme inline {
+  --color-brand-yellow: var(--brand-yellow);
+  --color-brand-black: var(--brand-black);
+  --color-page-bg: var(--page-bg);
+  --color-card-bg: var(--card-bg);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
 }
 
 @keyframes impactReveal {
