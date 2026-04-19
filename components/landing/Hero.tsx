@@ -6,9 +6,11 @@ export function Hero() {
     <section className="mx-auto grid min-h-[60vh] max-w-6xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-[1.2fr_1fr] md:py-28">
       <div className="flex flex-col items-start">
         <h1 className="font-display max-w-4xl text-4xl font-bold leading-[1.05] tracking-tight text-[var(--text-primary)] md:text-6xl">
-          News told you what happened.
+          Headlines tell you <span className="italic">what</span> happened.
           <br />
-          <span className="text-[var(--text-muted)]">We tell you why it matters to you.</span>
+          <span className="text-[var(--text-muted)]">
+            We tell you <span className="not-italic text-[var(--text-primary)]">so what</span>.
+          </span>
         </h1>
 
         <p className="mt-6 max-w-2xl text-base text-[var(--text-muted)] md:text-lg">
