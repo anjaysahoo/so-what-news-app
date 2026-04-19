@@ -53,9 +53,6 @@ export default function Home() {
     setActivePreset(null);
   }
 
-  // persona change remounts feed → drops stale personalized state
-  const personaKey = `${persona.career}|${persona.financialProfile}|${persona.lifeStage}`;
-
   return (
     <div className="min-h-screen bg-[var(--page-bg)]">
       {/* Brand header */}
@@ -163,7 +160,7 @@ export default function Home() {
           </div>
         </section>
 
-        <NewsFeed key={personaKey} persona={persona} />
+        <NewsFeed persona={persona} />
       </main>
     </div>
   );

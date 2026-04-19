@@ -46,3 +46,64 @@ body {
   opacity: 0;
   animation: impactReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+/* --- 3D flip card --- */
+/* Parent owns perspective. Never put transforms on ancestors of .flipper */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flip-card.is-flipped .flipper {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.face-back {
+  transform: rotateY(180deg) translateZ(0);
+}
+
+/* Button pulse when ready but not yet flipped */
+@keyframes readyPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 213, 71, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(245, 213, 71, 0);
+  }
+}
+
+.btn-ready {
+  animation: readyPulse 1.6s ease-in-out infinite;
+}
+
+/* Tiny spinner */
+@keyframes spinnerRot {
+  to { transform: rotate(360deg); }
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(17, 17, 17, 0.25);
+  border-top-color: var(--brand-black);
+  animation: spinnerRot 0.7s linear infinite;
+}
