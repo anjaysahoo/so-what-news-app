@@ -34,6 +34,8 @@ export function NewsCard({
   const [flipped, setFlipped] = useState(false);
 
   const canFlip = status === "ready" && !!result;
+  // Low-relevance signal: once personalization is in, cards scoring ≤ 3 visually recede.
+  const isLowRelevance = status === "ready" && !!result && result.relevanceScore <= 3;
 
   function handleFrontTap() {
     if (canFlip) setFlipped(true);
@@ -52,7 +54,10 @@ export function NewsCard({
       <div className="flipper">
         {/* FRONT */}
         <article
-          className="face face-front flex flex-col bg-[var(--card-bg)] shadow-[0_10px_30px_rgba(0,0,0,0.08)] ring-1 ring-black/5"
+          className={
+            "face face-front flex flex-col bg-[var(--card-bg)] shadow-[0_10px_30px_rgba(0,0,0,0.08)] ring-1 ring-black/5" +
+            (isLowRelevance ? " is-dimmed" : "")
+          }
         >
           <div className="relative h-[55%] w-full overflow-hidden">
             <Image

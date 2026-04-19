@@ -94,6 +94,17 @@ body {
   animation: readyPulse 1.6s ease-in-out infinite;
 }
 
+/* Low-relevance signal: desaturate + dim the front face of cards scoring ≤ 3 */
+.face-front.is-dimmed {
+  filter: grayscale(0.85) brightness(0.92);
+  opacity: 0.62;
+  transition: filter 400ms ease-out, opacity 400ms ease-out;
+}
+.face-front.is-dimmed:hover {
+  filter: grayscale(0.3) brightness(1);
+  opacity: 0.92;
+}
+
 /* Tiny spinner */
 @keyframes spinnerRot {
   to { transform: rotate(360deg); }
