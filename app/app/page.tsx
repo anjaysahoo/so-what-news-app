@@ -1,0 +1,210 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  CAREER_OPTIONS,
+  FINANCIAL_OPTIONS,
+  LIFE_STAGE_OPTIONS,
+  PERSONA_PRESETS,
+  type PersonaPreset,
+} from "@/constants/persona-options";
+import { NewsFeed } from "@/components/NewsFeed";
+import { useLocalStorage } from "@/lib/useLocalStorage";
+
+type StoredPersona = {
+  career: string;
+  financialProfile: string;
+  lifeStage: string;
+};
+
+const DEFAULT_PERSONA: StoredPersona = {
+  career: CAREER_OPTIONS[0],
+  financialProfile: FINANCIAL_OPTIONS[0],
+  lifeStage: LIFE_STAGE_OPTIONS[0],
+};
+
+export default function Home() {
+  const [persona, setPersona] = useLocalStorage<StoredPersona>(
+    "sowhat:persona",
+    DEFAULT_PERSONA
+  );
+  const [activePreset, setActivePreset] = useLocalStorage<string | null>(
+    "sowhat:activePreset",
+    null
+  );
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  function applyPreset(preset: PersonaPreset) {
+    setPersona({
+      career: preset.career,
+      financialProfile: preset.financialProfile,
+      lifeStage: preset.lifeStage,
+    });
+    setActivePreset(preset.label);
+  }
+
+  const personaSummary =
+    activePreset ?? `${persona.career} · ${persona.financialProfile} · ${persona.lifeStage}`;
+
+  function updateField(field: keyof StoredPersona, value: string) {
+    setPersona({ ...persona, [field]: value });
+    setActivePreset(null);
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--page-bg)]">
+      {/* Brand header */}
+      <header className="sticky top-0 z-10 border-b border-black/5 bg-[var(--page-bg)]/85 backdrop-blur">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+          <Image
+            src="/brand.png"
+            alt="SoWhat? — The news. But for you."
+            width={1024}
+            height={555}
+            priority
+            className="h-10 w-auto md:h-12"
+          />
+          <div className="hidden text-xs uppercase tracking-[0.2em] text-[var(--text-muted)] sm:block">
+            news that hits you
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-3xl px-6 pb-16 pt-6">
+        {/* Persona controls — collapsible */}
+        <section className="rounded-2xl border border-black/5 bg-white/70 shadow-sm">
+          <button
+            type="button"
+            onClick={() => setFilterOpen((o) => !o)}
+            aria-expanded={filterOpen}
+            aria-controls="persona-filter-panel"
+            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+          >
+            <div className="min-w-0">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                Your lens
+              </div>
+              <div className="mt-0.5 truncate text-sm font-medium text-neutral-800">
+                {personaSummary}
+              </div>
+            </div>
+            <span className="flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-3 py-1 text-xs font-medium text-neutral-700">
+              {filterOpen ? "Close" : "Change"}
+              <svg
+                className={
+                  "h-3.5 w-3.5 transition-transform " + (filterOpen ? "rotate-180" : "")
+                }
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </span>
+          </button>
+
+          {filterOpen && (
+          <div id="persona-filter-panel" className="border-t border-black/5 p-4">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {PERSONA_PRESETS.map((p) => {
+              const active = activePreset === p.label;
+              return (
+                <button
+                  key={p.label}
+                  type="button"
+                  onClick={() => applyPreset(p)}
+                  className={
+                    "rounded-full border px-3 py-1.5 text-xs font-medium transition " +
+                    (active
+                      ? "border-[var(--brand-black)] bg-[var(--brand-black)] text-white"
+                      : "border-neutral-300 bg-white text-neutral-700 hover:border-[var(--brand-black)]")
+                  }
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Career
+              </label>
+              <Select value={persona.career} onValueChange={(v) => updateField("career", v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CAREER_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Financial
+              </label>
+              <Select
+                value={persona.financialProfile}
+                onValueChange={(v) => updateField("financialProfile", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FINANCIAL_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                Life stage
+              </label>
+              <Select
+                value={persona.lifeStage}
+                onValueChange={(v) => updateField("lifeStage", v)}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LIFE_STAGE_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          </div>
+          )}
+        </section>
+
+        <NewsFeed persona={persona} />
+      </main>
+    </div>
+  );
+}
