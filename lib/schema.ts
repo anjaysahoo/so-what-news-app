@@ -19,6 +19,29 @@ export const ImpactSchema = z.object({
 });
 export type Impact = z.infer<typeof ImpactSchema>;
 
+export const ImpactWithScoreSchema = ImpactSchema.extend({
+  relevanceScore: z
+    .number()
+    .int()
+    .min(1)
+    .max(10)
+    .describe(
+      "How relevant this headline is to the persona. 1 = no impact on their life. 10 = they need to act on this today. Be harsh — most news is a 2–4 for any given persona."
+    ),
+});
+export type ImpactWithScore = z.infer<typeof ImpactWithScoreSchema>;
+
+export const PersonalizeRequestSchema = z.object({
+  headline: z.string().min(1),
+  persona: PersonaSchema,
+});
+export type PersonalizeRequest = z.infer<typeof PersonalizeRequestSchema>;
+
+export const PersonalizeResponseSchema = ImpactWithScoreSchema.extend({
+  tookMs: z.number(),
+});
+export type PersonalizeResponse = z.infer<typeof PersonalizeResponseSchema>;
+
 export const GenerateRequestSchema = z.object({
   persona: PersonaSchema,
 });
